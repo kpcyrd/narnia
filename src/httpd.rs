@@ -258,7 +258,7 @@ mod tests {
     #[test_case("C:\\\\", "/var/www/C:\\\\"; "windows prefix")]
     #[test_case("\\", "/var/www/\\"; "backslash")]
     fn test_valid_resolve_path_req(x: &str, y: &str) {
-        let resolved = resolve_path_req("/var/www/".into(), Path::new(x)).unwrap();
+        let resolved = resolve_path_req("/var/www/", Path::new(x)).unwrap();
         assert_eq!(resolved, Path::new(y));
     }
 
@@ -268,7 +268,7 @@ mod tests {
     #[test_case(".."; "parent")]
     #[test_case("a/b/../c"; "a b parent c")]
     fn test_invalid_resolve_path_req(x: &str) {
-        let result = resolve_path_req("/var/www/".into(), Path::new(x));
+        let result = resolve_path_req("/var/www/", Path::new(x));
         assert!(result.is_err());
     }
 }
