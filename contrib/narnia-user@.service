@@ -1,0 +1,8 @@
+[Unit]
+Description=TODO
+
+[Service]
+ExecStart=/usr/bin/narnia --data-dir %h/.local/share/narnia/%i/data --web-root %h/.local/share/narnia/%i/www
+
+[Install]
+WantedBy=default.target

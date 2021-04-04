@@ -1,0 +1,9 @@
+[Unit]
+Description=TODO
+
+[Service]
+User=narnia
+ExecStart=/usr/bin/narnia --data-dir /var/lib/narnia/%i/data --web-root /var/lib/narnia/%i/www
+
+[Install]
+WantedBy=multi-user.target
