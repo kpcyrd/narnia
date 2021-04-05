@@ -11,6 +11,8 @@ narnia -B ./narnia.sock -w www/
 # Serve www/ on a hidden service
 # The hidden service address is in `data/hs/hostname`
 narnia -D data/ -w www/
+# Serve www/ but chroot into it beforehand, verbose logs
+narnia -vv -B '[::1]:1337' -w / -C www/
 ```
 
 ## Comparison of http response headers

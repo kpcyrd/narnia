@@ -1,5 +1,6 @@
 use crate::args::Args;
 use crate::errors::*;
+use crate::security;
 use crate::utils;
 use actix_files::NamedFile;
 use actix_web::{
@@ -200,7 +201,7 @@ async fn index(cfg: web::Data<Config>, req: HttpRequest) -> impl Responder {
 }
 
 #[actix_web::main]
-pub async fn run(args: Args) -> Result<()> {
+async fn runtime(args: Args) -> Result<()> {
     let config = web::Data::new(Config {
         web_root: args.web_root.clone(),
         list_directories: args.list_directories,
@@ -230,6 +231,15 @@ pub async fn run(args: Args) -> Result<()> {
         .await
         .context("Failed to run http server")?;
 
+    Ok(())
+}
+
+pub fn run(args: Args) -> Result<()> {
+    if let Some(chroot) = &args.chroot {
+        security::chroot(chroot).with_context(|| anyhow!("Failed to chroot into: {:?}", chroot))?;
+        info!("Successfully chrooted into {:?}", chroot);
+    }
+    runtime(args)?;
     warn!("httpd thread has terminated");
     Ok(())
 }

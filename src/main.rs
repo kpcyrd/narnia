@@ -1,7 +1,7 @@
 use env_logger::Env;
 use narnia::args::Args;
 use narnia::errors::*;
-use nix::sys::stat::Mode;
+use narnia::utils;
 use std::sync::mpsc;
 use std::thread;
 use structopt::StructOpt;
@@ -17,12 +17,8 @@ fn main() -> Result<()> {
     env_logger::init_from_env(Env::default().default_filter_or(log_level));
 
     if let Some(data_dir) = &args.data_dir {
-        match nix::unistd::mkdir(data_dir, Mode::from_bits(0o700).unwrap()) {
-            Ok(()) => Ok(()),
-            Err(nix::Error::Sys(nix::errno::Errno::EEXIST)) => Ok(()),
-            Err(err) => Err(err)
-                .with_context(|| anyhow!("Failed to create data directory: {:?}", &data_dir)),
-        }?;
+        utils::mkprivdir(&data_dir)
+            .with_context(|| anyhow!("Failed to create data directory: {:?}", &data_dir))?;
     }
 
     let (tx, rx) = mpsc::channel();

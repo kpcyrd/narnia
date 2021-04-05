@@ -22,6 +22,9 @@ pub struct Args {
     /// The address to find to, supports unix domain sockets
     #[structopt(short = "B", long)]
     pub bind: Option<String>,
+    /// Chroot into folder before starting webserver
+    #[structopt(short = "C", long)]
+    pub chroot: Option<PathBuf>,
 }
 
 impl Args {
