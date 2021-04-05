@@ -55,6 +55,15 @@ narnia -vv -B '[::1]:1337' -w / -C www/
 < Accept-Ranges: bytes
 ```
 
+## Static binary
+
+```
+sudo pacman -S musl
+rustup target add x86_64-unknown-linux-musl
+cargo build --release --target x86_64-unknown-linux-musl --features=vendored
+ldd target/x86_64-unknown-linux-musl/release/narnia
+```
+
 ## License
 
 GPLv3+
