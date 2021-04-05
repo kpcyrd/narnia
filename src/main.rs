@@ -16,12 +16,14 @@ fn main() -> Result<()> {
     };
     env_logger::init_from_env(Env::default().default_filter_or(log_level));
 
-    match nix::unistd::mkdir(&args.data_dir, Mode::from_bits(0o700).unwrap()) {
-        Ok(()) => Ok(()),
-        Err(nix::Error::Sys(nix::errno::Errno::EEXIST)) => Ok(()),
-        Err(err) => Err(err)
-            .with_context(|| anyhow!("Failed to create data directory: {:?}", &args.data_dir)),
-    }?;
+    if let Some(data_dir) = &args.data_dir {
+        match nix::unistd::mkdir(data_dir, Mode::from_bits(0o700).unwrap()) {
+            Ok(()) => Ok(()),
+            Err(nix::Error::Sys(nix::errno::Errno::EEXIST)) => Ok(()),
+            Err(err) => Err(err)
+                .with_context(|| anyhow!("Failed to create data directory: {:?}", &data_dir)),
+        }?;
+    }
 
     let (tx, rx) = mpsc::channel();
     {
@@ -34,9 +36,9 @@ fn main() -> Result<()> {
             tx.send(()).ok();
         });
     }
-    if !args.skip_tor {
+    if let Some(data_dir) = args.data_dir.clone() {
         thread::spawn(move || {
-            if let Err(err) = narnia::tor::run(args) {
+            if let Err(err) = narnia::tor::run(args, data_dir) {
                 error!("Tor thread has terminated: {:#}", err);
             }
             tx.send(()).ok();

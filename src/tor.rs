@@ -2,12 +2,13 @@ use crate::args::Args;
 use crate::errors::*;
 use crate::utils;
 use libtor::{HiddenServiceVersion, Tor, TorAddress, TorFlag};
+use std::path::PathBuf;
 
-pub fn run(args: Args) -> Result<()> {
+pub fn run(args: Args, data_dir: PathBuf) -> Result<()> {
     let bind_addr = args.bind_addr()?;
 
-    let hs_path = utils::path_to_string(args.data_dir.join("hs"))?;
-    let data_dir = utils::path_to_string(args.data_dir)?;
+    let hs_path = utils::path_to_string(data_dir.join("hs"))?;
+    let data_dir = utils::path_to_string(data_dir)?;
 
     Tor::new()
         .flag(TorFlag::DataDirectory(data_dir))
