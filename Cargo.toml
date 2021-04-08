@@ -12,7 +12,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-vendored = ["openssl-sys/vendored"]
+vendored = ["libtor/vendored-openssl"]
 
 [dependencies]
 actix-files = "0.5.0"
@@ -23,7 +23,6 @@ htmlescape = "0.3.1"
 libtor = "45.7.0"
 log = "0.4.14"
 nix = "0.20.0"
-openssl-sys = { version = "0.9", optional = true }
 structopt = "0.3.21"
 
 [target.'cfg(target_os = "linux")'.dependencies]

@@ -1151,7 +1151,6 @@ dependencies = [
  "libtor",
  "log",
  "nix",
- "openssl-sys",
  "structopt",
  "test-case",
 ]
