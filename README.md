@@ -61,11 +61,22 @@ narnia -vv -B '[::1]:1337' -w / -C www/
 
 ## Static binary
 
+**Linux**
 ```
 sudo pacman -S musl
 rustup target add x86_64-unknown-linux-musl
 cargo build --release --target x86_64-unknown-linux-musl --features=vendored
+strip target/x86_64-unknown-linux-musl/release/narnia
 ldd target/x86_64-unknown-linux-musl/release/narnia
+```
+
+**Windows**
+```
+pacman -S mingw-w64
+rustup target add x86_64-pc-windows-gnu
+cargo build --release --target x86_64-pc-windows-gnu --features=vendored
+x86_64-w64-mingw32-strip target/x86_64-pc-windows-gnu/release/narnia.exe
+file target/x86_64-pc-windows-gnu/release/narnia.exe
 ```
 
 ## License

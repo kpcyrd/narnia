@@ -1,3 +1,5 @@
+#![cfg(unix)]
+
 use crate::errors::*;
 use std::path::Path;
 

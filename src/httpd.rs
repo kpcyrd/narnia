@@ -1,5 +1,6 @@
 use crate::args::Args;
 use crate::errors::*;
+#[cfg(unix)]
 use crate::security;
 use crate::utils;
 use actix_files::NamedFile;
@@ -221,6 +222,7 @@ async fn runtime(args: Args) -> Result<()> {
 
     let server = match args.bind_addr()? {
         TorAddress::Address(addr) => server.bind(addr),
+        #[cfg(unix)]
         TorAddress::Unix(path) => server.bind_uds(&path),
         _ => unreachable!(),
     };
@@ -235,6 +237,7 @@ async fn runtime(args: Args) -> Result<()> {
 }
 
 pub fn run(args: Args) -> Result<()> {
+    #[cfg(unix)]
     if let Some(chroot) = &args.chroot {
         security::chroot(chroot).with_context(|| anyhow!("Failed to chroot into: {:?}", chroot))?;
         info!("Successfully chrooted into {:?}", chroot);
