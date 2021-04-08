@@ -1,5 +1,9 @@
 # narnia
 
+narnia is a fast static webserver specifically designed for Tor hidden services. It's also able to spawn a Tor thread and expose itself as a hidden service, simply by setting an additional commandline option.
+
+narnia is hosting a mirror of its own source code on http://3wisi2bfpxplne5wlwz4l5ucvsbaozbteaqnm62oxzmgwhb2qqxvsuyd.onion/.
+
 ```
 # Start the http server and serve files in www/
 narnia -B '[::1]:1337' -w www/
