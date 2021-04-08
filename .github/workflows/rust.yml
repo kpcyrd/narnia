@@ -21,6 +21,59 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
 
+  cross:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+        - name: x86_64-unknown-linux-gnu
+        - name: x86_64-unknown-linux-musl
+        - name: x86_64-pc-windows-gnu
+          ext: .exe
+          binutils: mingw-w64-x86-64
+        - name: i686-unknown-linux-gnu
+          binutils: i686-linux-gnu
+        - name: armv7-unknown-linux-gnueabihf
+          binutils: arm-linux-gnueabihf
+        - name: aarch64-unknown-linux-gnu
+          binutils: aarch64-linux-gnu
+        - name: aarch64-unknown-linux-musl
+          binutils: aarch64-linux-gnu
+        - name: powerpc64le-unknown-linux-gnu
+          binutils: powerpc64le-linux-gnu
+        - name: mipsel-unknown-linux-gnu
+          binutils: mipsel-linux-gnu
+        - name: mips64el-unknown-linux-gnuabi64
+          binutils: mips64el-linux-gnuabi64
+        - name: s390x-unknown-linux-gnu
+          binutils: s390x-linux-gnu
+    steps:
+    - name: Install binutils
+      run: sudo apt-get install binutils-${{ matrix.arch.binutils }}
+      if: matrix.arch.binutils
+    - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: ${{ matrix.arch.name }}
+        override: true
+    - uses: actions-rs/cargo@v1
+      with:
+        use-cross: true
+        command: build
+        args: --target ${{ matrix.arch.name }} --release --features vendored
+    - name: Stripping binary (linux)
+      run: /usr/${{ matrix.arch.binutils }}/bin/strip target/${{ matrix.arch.name }}/release/narnia
+      if: ${{ contains(matrix.arch.name, 'linux') }}
+    - name: Stripping binary (windows)
+      run: x86_64-w64-mingw32-strip target/${{ matrix.arch.name }}/release/narnia.exe
+      if: ${{ contains(matrix.arch.name, 'windows') }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: narnia-${{ matrix.arch.name }}${{ matrix.arch.ext }}
+        path: target/${{ matrix.arch.name }}/release/narnia${{ matrix.arch.ext }}
+
   clippy:
     name: clippy
     runs-on: ubuntu-latest

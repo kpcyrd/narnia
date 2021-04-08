@@ -1,5 +1,4 @@
 use crate::errors::*;
-use crate::utils;
 use libtor::TorAddress;
 use std::path::PathBuf;
 use structopt::clap::AppSettings;
@@ -22,6 +21,7 @@ pub struct Args {
     /// The address to find to, supports unix domain sockets
     #[structopt(short = "B", long)]
     pub bind: Option<String>,
+    #[cfg(unix)]
     /// Chroot into folder before starting webserver
     #[structopt(short = "C", long)]
     pub chroot: Option<PathBuf>,
@@ -31,15 +31,29 @@ impl Args {
     pub fn bind_addr(&self) -> Result<TorAddress> {
         if let Some(bind_addr) = &self.bind {
             let bind_addr = bind_addr.to_string();
-            if bind_addr.starts_with('.') || bind_addr.starts_with('/') {
-                Ok(TorAddress::Unix(bind_addr))
-            } else {
-                Ok(TorAddress::Address(bind_addr))
+            cfg_if::cfg_if! {
+                if #[cfg(unix)] {
+                    if bind_addr.starts_with('.') || bind_addr.starts_with('/') {
+                        Ok(TorAddress::Unix(bind_addr))
+                    } else {
+                        Ok(TorAddress::Address(bind_addr))
+                    }
+                } else {
+                    Ok(TorAddress::Address(bind_addr))
+                }
             }
         } else if let Some(data_dir) = &self.data_dir {
-            let path = data_dir.join("narnia.sock");
-            let path = utils::path_to_string(path)?;
-            Ok(TorAddress::Unix(path))
+            cfg_if::cfg_if! {
+                if #[cfg(unix)] {
+                    use crate::utils;
+                    let path = data_dir.join("narnia.sock");
+                    let path = utils::path_to_string(path)?;
+                    Ok(TorAddress::Unix(path))
+                } else {
+                    let _ = data_dir;
+                    bail!("You always have to set -B on windows");
+                }
+            }
         } else {
             bail!("Either bind address or data directory needs to be configured")
         }

@@ -1,7 +1,6 @@
 use env_logger::Env;
 use narnia::args::Args;
 use narnia::errors::*;
-use narnia::utils;
 use std::sync::mpsc;
 use std::thread;
 use structopt::StructOpt;
@@ -16,8 +15,9 @@ fn main() -> Result<()> {
     };
     env_logger::init_from_env(Env::default().default_filter_or(log_level));
 
+    #[cfg(unix)]
     if let Some(data_dir) = &args.data_dir {
-        utils::mkprivdir(&data_dir)
+        narnia::utils::mkprivdir(&data_dir)
             .with_context(|| anyhow!("Failed to create data directory: {:?}", &data_dir))?;
     }
 

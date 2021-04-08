@@ -996,9 +996,9 @@ dependencies = [
 
 [[package]]
 name = "libtor-sys"
-version = "45.7.0+0.4.5.7"
+version = "45.7.1+0.4.5.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ce747cd374e0fd66d5d8b6b79fd7541b3e0a18881de7568e4c1796b9320c709"
+checksum = "624ddd94d1a56c01b564d676fccb29f56be4bcccbdd60eda0ec5c5d6f8f6879f"
 dependencies = [
  "autotools",
  "cc",
@@ -1146,6 +1146,7 @@ dependencies = [
  "actix-web",
  "anyhow",
  "caps",
+ "cfg-if 1.0.0",
  "env_logger",
  "htmlescape",
  "libtor",
@@ -1685,9 +1686,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.68"
+version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ce15dd3ed8aa2f8eeac4716d6ef5ab58b6b9256db41d7e1a0224c2788e8fd87"
+checksum = "48fe99c6bd8b1cc636890bcc071842de909d902c81ac7dab53ba33c421ab8ffb"
 dependencies = [
  "proc-macro2",
  "quote",
