@@ -1,13 +1,11 @@
 use crate::args::Args;
 use crate::errors::*;
-#[cfg(unix)]
-use crate::security;
+use crate::server::Bind;
 use crate::utils;
 use actix_files::NamedFile;
 use actix_web::{
     get, http::header, middleware, web, App, HttpRequest, HttpResponse, HttpServer, Responder,
 };
-use libtor::TorAddress;
 use std::borrow::Cow;
 use std::fs;
 use std::path::Component;
@@ -202,9 +200,9 @@ async fn index(cfg: web::Data<Config>, req: HttpRequest) -> impl Responder {
 }
 
 #[actix_web::main]
-async fn runtime(args: Args) -> Result<()> {
+pub async fn run(args: Args, bind: Bind, web_root: String) -> Result<()> {
     let config = web::Data::new(Config {
-        web_root: args.web_root.clone(),
+        web_root,
         list_directories: args.list_directories,
     });
     let server = HttpServer::new(move || {
@@ -220,11 +218,10 @@ async fn runtime(args: Args) -> Result<()> {
             .service(index)
     });
 
-    let server = match args.bind_addr()? {
-        TorAddress::Address(addr) => server.bind(addr),
+    let server = match bind {
+        Bind::Tcp(tcp) => server.listen(tcp),
         #[cfg(unix)]
-        TorAddress::Unix(path) => server.bind_uds(&path),
-        _ => unreachable!(),
+        Bind::Unix(uds) => server.listen_uds(uds),
     };
 
     server
@@ -233,16 +230,6 @@ async fn runtime(args: Args) -> Result<()> {
         .await
         .context("Failed to run http server")?;
 
-    Ok(())
-}
-
-pub fn run(args: Args) -> Result<()> {
-    #[cfg(unix)]
-    if let Some(chroot) = &args.chroot {
-        security::chroot(chroot).with_context(|| anyhow!("Failed to chroot into: {:?}", chroot))?;
-        info!("Successfully chrooted into {:?}", chroot);
-    }
-    runtime(args)?;
     warn!("httpd thread has terminated");
     Ok(())
 }
