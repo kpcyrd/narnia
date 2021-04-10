@@ -10,6 +10,7 @@ pub fn run(args: Args, data_dir: PathBuf) -> Result<()> {
     let hs_path = utils::path_to_string(data_dir.join("hs"))?;
     let data_dir = utils::path_to_string(data_dir)?;
 
+    debug!("Starting tor");
     Tor::new()
         .flag(TorFlag::DataDirectory(data_dir))
         .flag(TorFlag::SocksPort(0))

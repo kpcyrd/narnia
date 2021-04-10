@@ -1,0 +1,1 @@
+{"verbose":2,"data_dir":null,"web_root":"../narnia-data/www","list_directories":false,"bind":"[::1]:1337","user":null,"chroot":null,"child_process":false,"always_multi_process":false}

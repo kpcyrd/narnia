@@ -1,7 +1,7 @@
 use crate::errors::*;
-use std::path::PathBuf;
 #[cfg(unix)]
 use std::path::Path;
+use std::path::PathBuf;
 
 pub fn path_to_string(path: PathBuf) -> Result<String> {
     path.into_os_string()
