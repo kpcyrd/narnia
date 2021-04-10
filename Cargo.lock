@@ -1152,10 +1152,12 @@ dependencies = [
  "libtor",
  "log",
  "nix",
+ "pledge",
  "serde",
  "serde_json",
  "structopt",
  "test-case",
+ "unveil",
  "users",
 ]
 
@@ -1325,6 +1327,15 @@ name = "pkg-config"
 version = "0.3.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3831453b3449ceb48b6d9c7ad7c96d5ea673e9b470a1dc578c2ce6521230884c"
+
+[[package]]
+name = "pledge"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "199c57e2b5bc803ccdd1a3d1709f794be60fef55e973fe2be8c91b4f904c937a"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "ppv-lite86"
@@ -1965,6 +1976,15 @@ name = "unicode-xid"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
+
+[[package]]
+name = "unveil"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "adfcac53edd6621ba56597b2c17f6dacd3abb5863050c1b5bdb2ac1f46db5db0"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "url"

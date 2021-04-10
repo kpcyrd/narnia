@@ -3,3 +3,6 @@
 mod os;
 
 pub use self::os::*;
+
+#[cfg(target_os = "openbsd")]
+pub mod openbsd;
