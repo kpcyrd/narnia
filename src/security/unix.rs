@@ -1,5 +1,7 @@
 use crate::args::Args;
 use crate::errors::*;
+#[cfg(target_os = "openbsd")]
+use crate::security::openbsd;
 use nix::unistd::{Gid, Uid};
 use std::path::Path;
 use users::User;
@@ -23,7 +25,12 @@ pub fn setup(args: &Args) -> Result<()> {
         become_user(&user)?;
     }
 
-    // we won't chroot twice, so drop all capabilities here
+    #[cfg(target_os = "openbsd")]
+    openbsd::unveil(&args).context("Failed to setup unveil")?;
+
+    #[cfg(target_os = "openbsd")]
+    openbsd::pledge(&args).context("Failed to pledge")?;
+
     #[cfg(target_os = "linux")]
     drop_caps()?;
 
