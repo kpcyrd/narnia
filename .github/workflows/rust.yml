@@ -15,6 +15,9 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest]
     steps:
+    - name: Install MacOS build dependencies
+      run: brew install automake
+      if: matrix.os == 'macos-latest'
     - uses: actions/checkout@v2
     - name: Build
       run: cargo build --verbose
@@ -42,8 +45,9 @@ jobs:
           binutils: aarch64-linux-gnu
         - name: powerpc64le-unknown-linux-gnu
           binutils: powerpc64le-linux-gnu
-        - name: mipsel-unknown-linux-gnu
-          binutils: mipsel-linux-gnu
+        # broken 2021-11-16
+        #- name: mipsel-unknown-linux-gnu
+        #  binutils: mipsel-linux-gnu
         - name: mips64el-unknown-linux-gnuabi64
           binutils: mips64el-linux-gnuabi64
         - name: s390x-unknown-linux-gnu
