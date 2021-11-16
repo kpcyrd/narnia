@@ -89,7 +89,7 @@ impl Bind {
     pub fn setup(args: &Args) -> Result<Bind> {
         #[cfg(unix)]
         if let Some(data_dir) = &args.data_dir {
-            utils::mkprivdir(&data_dir)
+            utils::mkprivdir(data_dir)
                 .with_context(|| anyhow!("Failed to create data directory: {:?}", &data_dir))?;
         }
 

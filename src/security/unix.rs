@@ -16,7 +16,7 @@ pub fn setup(args: &Args) -> Result<()> {
 
     if args.data_dir.is_none() {
         if let Some(path) = &args.chroot {
-            chroot(&path).with_context(|| anyhow!("Failed to chroot into: {:?}", path))?;
+            chroot(path).with_context(|| anyhow!("Failed to chroot into: {:?}", path))?;
             info!("Successfully chrooted into {:?}", path);
         }
     }
