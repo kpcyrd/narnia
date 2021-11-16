@@ -1,6 +1,6 @@
 [package]
 name = "narnia"
-version = "0.2.0"
+version = "0.3.0"
 description = "Secure hidden service webserver"
 authors = ["kpcyrd <git@rxv.cc>"]
 license = "GPL-3.0"
