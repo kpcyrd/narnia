@@ -5,6 +5,7 @@ use crate::httpd;
 use crate::utils;
 use libtor::TorAddress;
 use std::env;
+use std::fs;
 use std::io::Write;
 use std::net::TcpListener;
 #[cfg(unix)]
@@ -101,6 +102,9 @@ impl Bind {
             }
             #[cfg(unix)]
             TorAddress::Unix(path) => {
+                if fs::remove_file(&path).is_ok() {
+                    debug!("Removed old unix domain socket");
+                }
                 info!("Binding to unix: {:?}", path);
                 let listener = UnixListener::bind(path)?;
                 Bind::Unix(listener)
