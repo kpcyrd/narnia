@@ -14,7 +14,7 @@ pub fn mkprivdir(path: &Path) -> Result<()> {
     use nix::sys::stat::Mode;
     match nix::unistd::mkdir(path, Mode::from_bits(0o700).unwrap()) {
         Ok(()) => Ok(()),
-        Err(nix::Error::Sys(nix::errno::Errno::EEXIST)) => Ok(()),
+        Err(nix::errno::Errno::EEXIST) => Ok(()),
         Err(err) => Err(Error::from(err)),
     }
 }

@@ -129,6 +129,12 @@ Next, pass the versions to cargo build:
 AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 cargo build
 ```
 
+### Alpine
+
+```
+doas apk add make autoconf automake openssl-dev
+```
+
 ## License
 
 GPLv3+

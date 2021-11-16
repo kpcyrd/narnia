@@ -11,16 +11,16 @@ pub struct Args {
     #[structopt(short, long, parse(from_occurrences))]
     pub verbose: u8,
     /// Enables a Tor thread for a hidden service, configures the folder to store Tor data in
-    #[structopt(short = "D", long)]
+    #[structopt(short = "D", long, env = "NARNIA_DATA_DIR")]
     pub data_dir: Option<PathBuf>,
     /// Files that should be served
-    #[structopt(short = "w", long)]
+    #[structopt(short = "w", long, env = "NARNIA_WEB_ROOT")]
     pub web_root: Option<String>,
     /// Enable directory listing if no index.html was found
     #[structopt(short = "L", long)]
     pub list_directories: bool,
     /// The address to find to, supports unix domain sockets
-    #[structopt(short = "B", long)]
+    #[structopt(short = "B", long, env = "NARNIA_BIND_ADDR")]
     pub bind: Option<String>,
     #[cfg(unix)]
     /// Change the process to this user after setup
