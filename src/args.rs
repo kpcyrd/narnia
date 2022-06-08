@@ -2,39 +2,36 @@ use crate::errors::*;
 use libtor::TorAddress;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use structopt::clap::AppSettings;
-use structopt::StructOpt;
 
-#[derive(Debug, Clone, StructOpt, Serialize, Deserialize)]
-#[structopt(global_settings = &[AppSettings::ColoredHelp])]
+#[derive(Debug, Clone, clap::Parser, Serialize, Deserialize)]
 pub struct Args {
-    #[structopt(short, long, parse(from_occurrences))]
+    #[clap(short, long, parse(from_occurrences))]
     pub verbose: u8,
     /// Enables a Tor thread for a hidden service, configures the folder to store Tor data in
-    #[structopt(short = "D", long, env = "NARNIA_DATA_DIR")]
+    #[clap(short = 'D', long, env = "NARNIA_DATA_DIR")]
     pub data_dir: Option<PathBuf>,
     /// Files that should be served
-    #[structopt(short = "w", long, env = "NARNIA_WEB_ROOT")]
+    #[clap(short = 'w', long, env = "NARNIA_WEB_ROOT")]
     pub web_root: Option<String>,
     /// Enable directory listing if no index.html was found
-    #[structopt(short = "L", long)]
+    #[clap(short = 'L', long)]
     pub list_directories: bool,
     /// The address to find to, supports unix domain sockets
-    #[structopt(short = "B", long, env = "NARNIA_BIND_ADDR")]
+    #[clap(short = 'B', long, env = "NARNIA_BIND_ADDR")]
     pub bind: Option<String>,
     #[cfg(unix)]
     /// Change the process to this user after setup
-    #[structopt(short, long)]
+    #[clap(short, long)]
     pub user: Option<String>,
     #[cfg(unix)]
     /// Chroot into folder before starting webserver
-    #[structopt(short = "C", long)]
+    #[clap(short = 'C', long)]
     pub chroot: Option<PathBuf>,
     /// Spawn a seperate process, read arguments as json from stdin
-    #[structopt(short = "M", long)]
+    #[clap(short = 'M', long)]
     pub child_process: bool,
     /// Always use multi-process mode
-    #[structopt(short = "m", long)]
+    #[clap(short = 'm', long)]
     pub always_multi_process: bool,
 }
 

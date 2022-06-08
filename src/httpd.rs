@@ -53,12 +53,6 @@ fn not_found() -> HttpResponse {
         .body("404 - not found\n")
 }
 
-fn internal_error() -> HttpResponse {
-    HttpResponse::InternalServerError()
-        .content_type("text/plain; charset=utf-8")
-        .body("500 - internal server error\n")
-}
-
 enum ResolvedPath<'a> {
     File(Cow<'a, Path>),
     ListDir(&'a Path),
@@ -155,20 +149,11 @@ async fn index(cfg: web::Data<Config>, req: HttpRequest) -> impl Responder {
                 }
             };
 
-            let res = file
-                .prefer_utf8(true)
+            file.prefer_utf8(true)
                 .disable_content_disposition()
                 .use_etag(false)
                 .use_last_modified(false)
-                .into_response(&req);
-
-            match res {
-                Ok(res) => res,
-                Err(err) => {
-                    warn!("Failed to create http response for {:?}: {:#}", path, err);
-                    internal_error()
-                }
-            }
+                .into_response(&req)
         }
         ResolvedPath::ListDir(path) => {
             let req_path = match utils::path_to_string(req_path) {
@@ -179,7 +164,7 @@ async fn index(cfg: web::Data<Config>, req: HttpRequest) -> impl Responder {
             // if req_path is not empty but doesn't end with /, redirect
             if !req_path.is_empty() && !req_path.ends_with('/') {
                 return HttpResponse::Found()
-                    .header(header::LOCATION, format!("/{}/", req_path))
+                    .append_header((header::LOCATION, format!("/{}/", req_path)))
                     .finish();
             }
 
@@ -191,7 +176,7 @@ async fn index(cfg: web::Data<Config>, req: HttpRequest) -> impl Responder {
                 }
             };
             HttpResponse::Ok()
-                .header(header::CONTENT_TYPE, "text/html; charset=utf-8")
+                .append_header((header::CONTENT_TYPE, "text/html; charset=utf-8"))
                 .body(listing)
         }
         ResolvedPath::Forbidden => forbidden(),
@@ -209,9 +194,9 @@ pub async fn run(args: Args, bind: Bind, web_root: String) -> Result<()> {
         App::new()
             .wrap(
                 middleware::DefaultHeaders::new()
-                    .header(header::DATE, "Thu, 01 Jan 1970 00:00:00 GMT")
-                    .header(header::X_CONTENT_TYPE_OPTIONS, "nosniff")
-                    .header(header::REFERRER_POLICY, "no-referrer"),
+                    .add((header::DATE, "Thu, 01 Jan 1970 00:00:00 GMT"))
+                    .add((header::X_CONTENT_TYPE_OPTIONS, "nosniff"))
+                    .add((header::REFERRER_POLICY, "no-referrer")),
             )
             .wrap(middleware::Compress::default())
             .app_data(config.clone())
