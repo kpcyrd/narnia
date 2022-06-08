@@ -1,3 +1,4 @@
+use clap::Parser;
 use env_logger::Env;
 use narnia::args::Args;
 use narnia::errors::*;
@@ -6,10 +7,9 @@ use narnia::server::Server;
 use std::io::{self, Read};
 use std::sync::mpsc;
 use std::thread;
-use structopt::StructOpt;
 
 fn get_arguments() -> Result<Args> {
-    let mut args = Args::from_args();
+    let mut args = Args::parse();
     if args.child_process {
         args = read_args_stdin().context("Failed to read arguments from stdin")?;
         args.child_process = true;
